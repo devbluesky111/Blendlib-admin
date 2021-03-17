@@ -24,6 +24,7 @@
         "clsx": "1.1.1",
         "cross-fetch": "3.0.6",
         "date-fns": "2.16.1",
+        "express": "^4.17.1",
         "firebase": "8.2.2",
         "formsy-react": "2.2.1",
         "google-map-react": "2.1.9",
@@ -115,7 +116,8 @@
         "tailwindcss-dir": "4.0.0"
     },
     "scripts": {
-        "start": "yarn run tailwind && react-scripts start",
+        "start": "node server.js",
+        "dev": "yarn run tailwind && react-scripts start",
         "build": "yarn run tailwind && yarn run purge-tailwind && cross-env GENERATE_SOURCEMAP=false react-scripts build",
         "tailwind": "tailwind build ./src/styles/tailwind-config.css -c ./tailwind.config.js -o ./src/styles/tailwind.css",
         "purge-tailwind": "node ./purge-tailwindcss.js",
