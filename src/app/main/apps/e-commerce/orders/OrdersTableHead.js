@@ -26,31 +26,10 @@ const rows = [
 		sort: true
 	},
 	{
-		id: 'reference',
+		id: 'name',
 		align: 'left',
 		disablePadding: false,
-		label: 'Reference',
-		sort: true
-	},
-	{
-		id: 'customer',
-		align: 'left',
-		disablePadding: false,
-		label: 'Customer',
-		sort: true
-	},
-	{
-		id: 'total',
-		align: 'right',
-		disablePadding: false,
-		label: 'Total',
-		sort: true
-	},
-	{
-		id: 'payment',
-		align: 'left',
-		disablePadding: false,
-		label: 'Payment',
+		label: 'Name',
 		sort: true
 	},
 	{

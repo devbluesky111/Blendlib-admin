@@ -9,17 +9,16 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FuseLoading from '@fuse/core/FuseLoading';
 import FuseAnimate from '@fuse/core/FuseAnimate';
-import OrdersStatus from '../order/OrdersStatus';
-import { selectOrders, getOrders } from '../store/ordersSlice';
 import OrdersTableHead from './OrdersTableHead';
+import clsx from 'clsx';
 
 function OrdersTable(props) {
-	const dispatch = useDispatch();
-	const orders = useSelector(selectOrders);
+
+	const [orders, setOrders] = useState([]);
 	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
 
 	const [loading, setLoading] = useState(true);
@@ -33,8 +32,23 @@ function OrdersTable(props) {
 	});
 
 	useEffect(() => {
-		dispatch(getOrders()).then(() => setLoading(false));
-	}, [dispatch]);
+		console.log('------->', process.env.BACKEND_URL);
+		setOrders([
+			{
+				id: 1,
+				name: 'Furniture',
+				status: 'on',
+				created: '2021-03-21'
+			},
+			{
+				id: 2,
+				name: 'Chairs',
+				status: 'off',
+				created: '2021-03-23'
+			},
+		]);
+		setLoading(false);
+	}, []);
 
 	useEffect(() => {
 		if (searchText.length !== 0) {
@@ -138,14 +152,14 @@ function OrdersTable(props) {
 										case 'id': {
 											return parseInt(o.id, 10);
 										}
-										case 'customer': {
-											return o.customer.firstName;
-										}
-										case 'payment': {
-											return o.payment.method;
+										case 'name': {
+											return o.name;
 										}
 										case 'status': {
-											return o.status[0].name;
+											return o.status;
+										}
+										case 'date': {
+											return o.created;
 										}
 										default: {
 											return o[order.id];
@@ -181,29 +195,18 @@ function OrdersTable(props) {
 											{n.id}
 										</TableCell>
 
-										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.reference}
-										</TableCell>
-
 										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-											{`${n.customer.firstName} ${n.customer.lastName}`}
-										</TableCell>
-
-										<TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-											<span>$</span>
-											{n.total}
+											{`${n.name}`}
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.payment.method}
+											<div className={clsx('inline text-12 p-4 rounded truncate', n.status==='on'?`bg-green text-white`:`bg-red text-white`)}>
+												{n.status}
+											</div>
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											<OrdersStatus name={n.status[0].name} />
-										</TableCell>
-
-										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.date}
+											{n.created}
 										</TableCell>
 									</TableRow>
 								);

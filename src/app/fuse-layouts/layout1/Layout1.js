@@ -13,7 +13,7 @@ import FooterLayout1 from './components/FooterLayout1';
 import LeftSideLayout1 from './components/LeftSideLayout1';
 import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
 // import RightSideLayout1 from './components/RightSideLayout1';
-// import ToolbarLayout1 from './components/ToolbarLayout1';
+import ToolbarLayout1 from './components/ToolbarLayout1';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -96,22 +96,22 @@ function Layout1(props) {
 					{config.leftSidePanel.display && <LeftSideLayout1 />}
 
 					<div className="flex flex-1 flex-col overflow-hidden relative">
-						{/* {config.toolbar.display &&
+						{config.toolbar.display &&
 							config.toolbar.style === 'fixed' &&
-							config.toolbar.position === 'above' && <ToolbarLayout1 />} */}
+							config.toolbar.position === 'above' && <ToolbarLayout1 />}
 
 						<FuseScrollbars className="overflow-auto" scrollToTopOnRouteChange>
-							{/* {config.toolbar.display &&
+							{config.toolbar.display &&
 								config.toolbar.style !== 'fixed' &&
-								config.toolbar.position === 'above' && <ToolbarLayout1 />} */}
+								config.toolbar.position === 'above' && <ToolbarLayout1 />}
 
 							<div className={classes.wrapper}>
 								{config.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />}
 
 								<div className={classes.contentWrapper}>
-									{/* {config.toolbar.display && config.toolbar.position === 'below' && (
+									{config.toolbar.display && config.toolbar.position === 'below' && (
 										<ToolbarLayout1 />
-									)} */}
+									)}
 
 									<div className={classes.content}>
 										<FuseDialog />
@@ -154,20 +154,20 @@ function Layout1(props) {
 					{config.leftSidePanel.display && <LeftSideLayout1 />}
 
 					<div className="flex flex-1 flex-col overflow-hidden relative">
-						{/* {config.toolbar.display && config.toolbar.position === 'above' && <ToolbarLayout1 />} */}
+						{config.toolbar.display && config.toolbar.position === 'above' && <ToolbarLayout1 />}
 
 						<div className={classes.wrapper}>
 							{config.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />}
 
 							<div className={classes.contentWrapper}>
-								{/* {config.toolbar.display &&
+								{config.toolbar.display &&
 									config.toolbar.position === 'below' &&
-									config.toolbar.style === 'fixed' && <ToolbarLayout1 />} */}
+									config.toolbar.style === 'fixed' && <ToolbarLayout1 />}
 
 								<FuseScrollbars className={classes.content} scrollToTopOnRouteChange>
-									{/* {config.toolbar.display &&
+									{config.toolbar.display &&
 										config.toolbar.position === 'below' &&
-										config.toolbar.style !== 'fixed' && <ToolbarLayout1 />} */}
+										config.toolbar.style !== 'fixed' && <ToolbarLayout1 />}
 
 									<FuseDialog />
 

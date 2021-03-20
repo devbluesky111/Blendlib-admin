@@ -4,15 +4,19 @@ import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
 import { ThemeProvider } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
+import React, {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMainTheme } from 'app/store/fuse/settingsSlice';
 import { setOrdersSearchText } from '../store/ordersSlice';
+import Button from '@material-ui/core/Button';
+import Dialog from './Dialog';
 
 function OrdersHeader(props) {
 	const dispatch = useDispatch();
 	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
 	const mainTheme = useSelector(selectMainTheme);
+
+	const [openDlg, setOpenDlg] = useState(false);
 
 	return (
 		<div className="flex flex-1 w-full items-center justify-between">
@@ -23,7 +27,7 @@ function OrdersHeader(props) {
 
 				<FuseAnimate animation="transition.slideLeftIn" delay={300}>
 					<Typography className="hidden sm:flex mx-0 sm:mx-12" variant="h6">
-						Orders
+						Menu
 					</Typography>
 				</FuseAnimate>
 			</div>
@@ -49,6 +53,23 @@ function OrdersHeader(props) {
 					</FuseAnimate>
 				</ThemeProvider>
 			</div>
+
+			<div className="flex flex-2 items-right px-12">
+				<div className="p-24">
+					<Button
+						onClick={() => {
+							setOpenDlg(true);
+						}}
+						variant="contained"
+						color="secondary"
+						className="w-full"
+					>
+						Add task
+					</Button>
+				</div>
+			</div>
+			
+			<Dialog open={openDlg} closeDlg={()=>{setOpenDlg(false)}} />
 		</div>
 	);
 }
