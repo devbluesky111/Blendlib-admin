@@ -17,6 +17,7 @@ function OrdersHeader(props) {
 	const mainTheme = useSelector(selectMainTheme);
 
 	const [openDlg, setOpenDlg] = useState(false);
+	const [dlgType, setDlgType] = useState('new');
 
 	return (
 		<div className="flex flex-1 w-full items-center justify-between">
@@ -58,6 +59,7 @@ function OrdersHeader(props) {
 				<div className="p-24">
 					<Button
 						onClick={() => {
+							setDlgType('new');
 							setOpenDlg(true);
 						}}
 						variant="contained"
@@ -69,7 +71,7 @@ function OrdersHeader(props) {
 				</div>
 			</div>
 			
-			<Dialog open={openDlg} closeDlg={()=>{setOpenDlg(false)}} />
+			<Dialog open={openDlg} type={dlgType} closeDlg={()=>{setOpenDlg(false)}} />
 		</div>
 	);
 }

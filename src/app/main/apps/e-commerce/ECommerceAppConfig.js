@@ -19,8 +19,8 @@ const ECommerceAppConfig = {
 			component: React.lazy(() => import('./order/Order'))
 		},
 		{
-			path: '/apps/e-commerce/orders',
-			component: React.lazy(() => import('./orders/Orders'))
+			path: '/apps/e-commerce/menu',
+			component: React.lazy(() => import('./menus/Menus'))
 		},
 		{
 			path: '/apps/e-commerce',

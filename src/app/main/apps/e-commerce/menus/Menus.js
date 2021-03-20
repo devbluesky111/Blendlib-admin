@@ -5,7 +5,7 @@ import reducer from '../store';
 import OrdersHeader from './OrdersHeader';
 import OrdersTable from './OrdersTable';
 
-function Orders() {
+function Menus() {
 	return (
 		<FusePageCarded
 			classes={{
@@ -20,4 +20,4 @@ function Orders() {
 	);
 }
 
-export default withReducer('eCommerceApp', reducer)(Orders);
+export default withReducer('eCommerceApp', reducer)(Menus);

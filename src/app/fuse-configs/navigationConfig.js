@@ -836,7 +836,7 @@ const navigationConfig = [
 						id: 'e-commerce-orders',
 						title: 'Menu',
 						type: 'item',
-						url: '/apps/e-commerce/orders',
+						url: '/apps/e-commerce/menu',
 						exact: true
 					},
 					{

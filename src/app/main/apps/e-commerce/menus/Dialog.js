@@ -10,27 +10,18 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import moment from 'moment/moment';
 import React from 'react';
 
 const defaultFormState = {
 	id: '',
-	title: '',
-	notes: '',
-	startDate: new Date(),
-	dueDate: new Date(),
-	completed: false,
-	starred: false,
-	important: false,
-	deleted: false,
-	labels: []
+	name: '',
+	status: '',
+	created: new Date(),
 };
 
 function TodoDialog(props) {
 
 	const { form, handleChange } = useForm({ ...defaultFormState }); // setForm
-	const startDate = moment(form.startDate).format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
-	const dueDate = moment(form.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
 
 	function closeTodoDialog() {
 		props.closeDlg();
@@ -59,63 +50,19 @@ function TodoDialog(props) {
 				<div className="px-16 sm:px-24">
 					<FormControl className="mt-8 mb-16" required fullWidth>
 						<TextField
-							label="Title"
+							label="Name"
 							autoFocus
-							name="title"
-							value={form.title}
+							name="name"
+							value={form.name}
 							onChange={handleChange}
 							required
 							variant="outlined"
 						/>
 					</FormControl>
-
-					<FormControl className="mt-8 mb-16" required fullWidth>
-						<TextField
-							label="Notes"
-							name="notes"
-							multiline
-							rows="6"
-							value={form.notes}
-							onChange={handleChange}
-							variant="outlined"
-						/>
-					</FormControl>
-					<div className="flex -mx-4">
-						<TextField
-							name="startDate"
-							label="Start Date"
-							type="datetime-local"
-							className="mt-8 mb-16 mx-4"
-							InputLabelProps={{
-								shrink: true
-							}}
-							inputProps={{
-								max: dueDate
-							}}
-							value={startDate}
-							onChange={handleChange}
-							variant="outlined"
-						/>
-						<TextField
-							name="dueDate"
-							label="Due Date"
-							type="datetime-local"
-							className="mt-8 mb-16 mx-4"
-							InputLabelProps={{
-								shrink: true
-							}}
-							inputProps={{
-								min: startDate
-							}}
-							value={dueDate}
-							onChange={handleChange}
-							variant="outlined"
-						/>
-					</div>
 				</div>
 			</DialogContent>
 
-			{true ? (
+			{props.type === 'new' ? (
 				<DialogActions className="justify-between p-8">
 					<div className="px-16">
 						<Button
