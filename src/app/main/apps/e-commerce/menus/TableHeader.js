@@ -14,8 +14,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { removeOrders } from '../store/ordersSlice';
 
 const rows = [
 	{
@@ -40,6 +38,13 @@ const rows = [
 		sort: true
 	},
 	{
+		id: 'order_num',
+		align: 'left',
+		disablePadding: false,
+		label: 'Order',
+		sort: true
+	},
+	{
 		id: 'date',
 		align: 'left',
 		disablePadding: false,
@@ -54,14 +59,12 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function OrdersTableHead(props) {
+function TableHeader(props) {
 	const classes = useStyles(props);
 	const { selectedOrderIds } = props;
 	const numSelected = selectedOrderIds.length;
 
 	const [selectedOrdersMenu, setSelectedOrdersMenu] = useState(null);
-
-	const dispatch = useDispatch();
 
 	const createSortHandler = property => event => {
 		props.onRequestSort(event, property);
@@ -74,8 +77,6 @@ function OrdersTableHead(props) {
 	function closeSelectedOrdersMenu() {
 		setSelectedOrdersMenu(null);
 	}
-
-	// const {onSelectAllClick, order, orderBy, numSelected, rowCount} = props;
 
 	return (
 		<TableHead>
@@ -109,7 +110,6 @@ function OrdersTableHead(props) {
 								<MenuList>
 									<MenuItem
 										onClick={() => {
-											dispatch(removeOrders(selectedOrderIds));
 											props.onMenuItemClick();
 											closeSelectedOrdersMenu();
 										}}
@@ -156,4 +156,4 @@ function OrdersTableHead(props) {
 	);
 }
 
-export default OrdersTableHead;
+export default TableHeader;

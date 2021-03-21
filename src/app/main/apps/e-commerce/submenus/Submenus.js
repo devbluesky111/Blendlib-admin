@@ -12,6 +12,7 @@ import FuseLoading from '@fuse/core/FuseLoading';
 
 const defaultFormState = {
 	id: '',
+	m_id: '',
 	name: '',
 	status: '',
 	order_num: '',
@@ -25,18 +26,21 @@ function Menus() {
 	const [dlgType, setDlgType] = useState('new');
 	const [loading, setLoading] = useState(true);
 	const [items, setItems] = useState([]);
+	const [menus, setMenus] = useState([]);
 
 	const init = async () => {
-		const res = await axios.post(Backend.URL + '/get_menu');
+		const res = await axios.post(Backend.URL + '/get_submenu');
 		setItems(res.data);
+		const resp = await axios.post(Backend.URL + '/get_menu');
+		setMenus(resp.data);
 	}
 
 	const addMenuData = () => {
-		if(form.name === '' || form.order_num === '' || form.status === '') {
+		if(form.m_id === '' || form.name === '' || form.order_num === '' || form.status === '') {
 			alert('Please fill out the required fields!');
 			return false;
 		}
-		axios.post(Backend.URL + '/add_menu', form).then(function(resp){
+		axios.post(Backend.URL + '/add_submenu', form).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -50,7 +54,7 @@ function Menus() {
 			alert('Menu name is required!');
 			return false;
 		}
-		axios.post(Backend.URL + '/edit_menu', form).then(function(resp){
+		axios.post(Backend.URL + '/edit_submenu', form).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -61,6 +65,10 @@ function Menus() {
 
 	const changeStatus = (e) => {
 		setForm({...form, status:e.target.value});
+	}
+
+	const changeMain = (e) => {
+		setForm({...form, m_id:e.target.value});
 	}
 
 	const changeOrder = (e) => {
@@ -80,7 +88,7 @@ function Menus() {
 	}
 
 	const deleteMenu = () => {		
-		axios.post(Backend.URL + '/delete_menu', {ids:[form.id]}).then(function(resp){
+		axios.post(Backend.URL + '/delete_submenu', {ids:[form.id]}).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -90,7 +98,7 @@ function Menus() {
 	}
 
 	const deleteMenus = (ids) => {		
-		axios.post(Backend.URL + '/delete_menu', {ids:ids}).then(function(resp){
+		axios.post(Backend.URL + '/delete_submenu', {ids:ids}).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -116,10 +124,10 @@ function Menus() {
 					header: 'min-h-72 h-72 sm:h-136 sm:min-h-136'
 				}}
 				header={<Header addMenu={addMenu} />}
-				content={<Tables items={items} editMenu={editMenu} deleteMenus={deleteMenus} />}
+				content={<Tables items={items} menus={menus} editMenu={editMenu} deleteMenus={deleteMenus} />}
 				innerScroll
 			/>
-			<Dialog open={openDlg} type={dlgType} form={form} addMenu={addMenuData} editMenu={editMenuData} deleteMenu={deleteMenu} changeOrder={changeOrder} changeName={handleChange} changeStatus={changeStatus} closeDlg={()=>{setOpenDlg(false)}} />
+			<Dialog open={openDlg} type={dlgType} changeMain={changeMain} form={form} menus={menus} addMenu={addMenuData} editMenu={editMenuData} deleteMenu={deleteMenu} changeOrder={changeOrder} changeName={handleChange} changeStatus={changeStatus} closeDlg={()=>{setOpenDlg(false)}} />
 		</>
 	);
 }

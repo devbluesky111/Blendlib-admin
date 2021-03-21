@@ -843,7 +843,7 @@ const navigationConfig = [
 						id: 'e-commerce-order-detail',
 						title: 'Sub Menu',
 						type: 'item',
-						url: '/apps/e-commerce/orders/1',
+						url: '/apps/e-commerce/submenu',
 						exact: true
 					}
 				]

@@ -11,19 +11,17 @@ import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import FuseLoading from '@fuse/core/FuseLoading';
 import FuseAnimate from '@fuse/core/FuseAnimate';
-import OrdersTableHead from './OrdersTableHead';
+import TableHeader from './TableHeader';
 import clsx from 'clsx';
+import Moment from 'react-moment';
 
-function OrdersTable(props) {
+function Tables(props) {
 
-	const [orders, setOrders] = useState([]);
 	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
 
-	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState([]);
-	const [data, setData] = useState(orders);
+	const [data, setData] = useState(props.items);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [order, setOrder] = useState({
@@ -32,32 +30,13 @@ function OrdersTable(props) {
 	});
 
 	useEffect(() => {
-		console.log('------->', process.env.BACKEND_URL);
-		setOrders([
-			{
-				id: 1,
-				name: 'Furniture',
-				status: 'on',
-				created: '2021-03-21'
-			},
-			{
-				id: 2,
-				name: 'Chairs',
-				status: 'off',
-				created: '2021-03-23'
-			},
-		]);
-		setLoading(false);
-	}, []);
-
-	useEffect(() => {
 		if (searchText.length !== 0) {
-			setData(FuseUtils.filterArrayByString(orders, searchText));
+			setData(FuseUtils.filterArrayByString(props.items, searchText));
 			setPage(0);
 		} else {
-			setData(orders);
+			setData(props.items);
 		}
-	}, [orders, searchText]);
+	}, [props.items, searchText]);
 
 	function handleRequestSort(event, property) {
 		const id = property;
@@ -82,11 +61,11 @@ function OrdersTable(props) {
 	}
 
 	function handleDeselect() {
-		setSelected([]);
+		props.deleteMenus(selected);
 	}
 
 	function handleClick(item) {
-		;
+		props.editMenu(item);
 	}
 
 	function handleCheck(event, id) {
@@ -114,10 +93,6 @@ function OrdersTable(props) {
 		setRowsPerPage(event.target.value);
 	}
 
-	if (loading) {
-		return <FuseLoading />;
-	}
-
 	if (data.length === 0) {
 		return (
 			<FuseAnimate delay={100}>
@@ -134,7 +109,7 @@ function OrdersTable(props) {
 		<div className="w-full flex flex-col">
 			<FuseScrollbars className="flex-grow overflow-x-auto">
 				<Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-					<OrdersTableHead
+					<TableHeader
 						selectedOrderIds={selected}
 						order={order}
 						onSelectAllClick={handleSelectAllClick}
@@ -196,6 +171,10 @@ function OrdersTable(props) {
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+											{props.menus.filter(menu => menu.id === n.m_id).map((mm) => {return mm.name} )}
+										</TableCell>
+
+										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
 											{`${n.name}`}
 										</TableCell>
 
@@ -205,8 +184,12 @@ function OrdersTable(props) {
 											</div>
 										</TableCell>
 
+										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+											{`${n.order_num}`}
+										</TableCell>
+
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.created}
+											<Moment format="YYYY-MM-DD">{n.created}</Moment>
 										</TableCell>
 									</TableRow>
 								);
@@ -234,4 +217,4 @@ function OrdersTable(props) {
 	);
 }
 
-export default withRouter(OrdersTable);
+export default withRouter(Tables);

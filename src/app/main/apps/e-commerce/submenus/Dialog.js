@@ -30,7 +30,7 @@ function TodoDialog(props) {
 			<AppBar position="static" className="shadow-md">
 				<Toolbar className="flex w-full">
 					<Typography variant="subtitle1" color="inherit">
-						Menu
+						Sub Menu
 					</Typography>
 				</Toolbar>
 			</AppBar>
@@ -48,6 +48,28 @@ function TodoDialog(props) {
 							required
 							variant="outlined"
 						/>
+					</FormControl>
+					<FormControl className="mt-16 mb-16" fullWidth required variant="outlined">
+						<InputLabel htmlFor="main-menu"> Main Menu </InputLabel>
+						<Select
+							value={props.form.m_id}
+							onChange={props.changeMain}
+							input={
+								<OutlinedInput
+									labelWidth={'category'.length * 9}
+									name="category"
+									id="main-menu"
+								/>
+							}
+						>
+							{props.menus.map((menu) => {
+								return (
+									<MenuItem value={menu.id} key={menu.id}>
+										<em> {menu.name} </em>
+									</MenuItem>
+								)
+							})}
+						</Select>
 					</FormControl>
 					<FormControl className="mt-16 mb-16" required fullWidth>
 						<TextField
