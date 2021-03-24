@@ -14,8 +14,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { removeProducts } from '../store/productsSlice';
 
 const rows = [
 	{
@@ -75,8 +73,6 @@ function ProductsTableHead(props) {
 
 	const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
 
-	const dispatch = useDispatch();
-
 	const createSortHandler = property => event => {
 		props.onRequestSort(event, property);
 	};
@@ -121,7 +117,6 @@ function ProductsTableHead(props) {
 								<MenuList>
 									<MenuItem
 										onClick={() => {
-											dispatch(removeProducts(selectedProductIds));
 											props.onMenuItemClick();
 											closeSelectedProductsMenu();
 										}}

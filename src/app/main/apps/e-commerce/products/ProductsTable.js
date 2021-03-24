@@ -80,7 +80,13 @@ function ProductsTable(props) {
 		setSelected([]);
 	}
 
-	function handleDeselect() {
+	async function handleDeselect() {
+		const resp = await axios.post(Backend.URL + '/delete_product', {ids: selected});
+		if (resp.data.ids) {
+			setLoading(true);
+			init();
+			setLoading(false);
+		}
 		setSelected([]);
 	}
 
@@ -190,7 +196,7 @@ function ProductsTable(props) {
 											{n.p_image ? (
 												<img
 													className="w-full block rounded"
-													src={n.p_image}
+													src={Backend.URL + `/images/` + n.p_image}
 													alt={n.name}
 												/>
 											) : (
