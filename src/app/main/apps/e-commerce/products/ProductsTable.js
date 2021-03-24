@@ -8,33 +8,46 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import FuseLoading from '@fuse/core/FuseLoading';
 import FuseAnimate from '@fuse/core/FuseAnimate/FuseAnimate';
-import { getProducts, selectProducts } from '../store/productsSlice';
 import ProductsTableHead from './ProductsTableHead';
+import Backend from '@fuse/utils/BackendUrl';
+import axios from 'axios';
+import Moment from 'react-moment';
+import { withRouter } from 'react-router-dom';
+
 
 function ProductsTable(props) {
-	const dispatch = useDispatch();
-	const products = useSelector(selectProducts);
+	const [products, setProducts] = useState([]);
 	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
 
 	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState([]);
-	const [data, setData] = useState(products);
+	const [data, setData] = useState([]);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [order, setOrder] = useState({
 		direction: 'asc',
 		id: null
 	});
+	const [menus, setMenus] = useState([]);
+	const [submenus, setSubmenus] = useState([]);
+
+	const init = async () => {
+		const res1 = await axios.post(Backend.URL + '/get_submenu');
+		setSubmenus(res1.data);
+		const res2 = await axios.post(Backend.URL + '/get_menu');
+		setMenus(res2.data);
+		const res = await axios.post(Backend.URL + '/get_products');
+		setProducts(res.data);
+	}
 
 	useEffect(() => {
-		dispatch(getProducts()).then(() => setLoading(false));
-	}, [dispatch]);
+		init();
+		setLoading(false);
+	}, []);
 
 	useEffect(() => {
 		if (searchText.length !== 0) {
@@ -72,7 +85,7 @@ function ProductsTable(props) {
 	}
 
 	function handleClick(item) {
-		props.history.push(`/apps/e-commerce/products/${item.id}/${item.handle}`);
+		props.history.push(`/apps/e-commerce/products/${item.id}`);
 	}
 
 	function handleCheck(event, id) {
@@ -174,10 +187,10 @@ function ProductsTable(props) {
 											scope="row"
 											padding="none"
 										>
-											{n.images.length > 0 && n.featuredImageId ? (
+											{n.p_image ? (
 												<img
 													className="w-full block rounded"
-													src={_.find(n.images, { id: n.featuredImageId }).url}
+													src={n.p_image}
 													alt={n.name}
 												/>
 											) : (
@@ -194,32 +207,25 @@ function ProductsTable(props) {
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-											{n.categories.join(', ')}
+											{menus.filter(menu => n.main_menu === menu.id).map((mm) => {
+												return mm.name;
+											} )}
 										</TableCell>
 
-										<TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-											<span>$</span>
-											{n.priceTaxIncl}
+										<TableCell className="p-4 md:p-16" component="th" scope="row">
+											{submenus.filter(smenu => n.sub_menu === smenu.id).map((sm) => {
+												return sm.name;
+											} )}
 										</TableCell>
 
-										<TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-											{n.quantity}
-											<i
-												className={clsx(
-													'inline-block w-8 h-8 rounded mx-8',
-													n.quantity <= 5 && 'bg-red',
-													n.quantity > 5 && n.quantity <= 25 && 'bg-orange',
-													n.quantity > 25 && 'bg-green'
-												)}
-											/>
+										<TableCell className="p-4 md:p-16" component="th" scope="row">
+											<Moment format="YYYY-MM-DD">{n.created}</Moment>
 										</TableCell>
 
-										<TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-											{n.active ? (
-												<Icon className="text-green text-20">check_circle</Icon>
-											) : (
-												<Icon className="text-red text-20">remove_circle</Icon>
-											)}
+										<TableCell className="p-4 md:p-16" component="th" scope="row">
+											{n.free_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}	
+											{n.pro_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}	
+											{n.local_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}									
 										</TableCell>
 									</TableRow>
 								);

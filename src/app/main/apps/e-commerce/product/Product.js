@@ -1,27 +1,31 @@
 import FuseAnimate from '@fuse/core/FuseAnimate';
-import FuseChipSelect from '@fuse/core/FuseChipSelect';
 import FuseLoading from '@fuse/core/FuseLoading';
 import FusePageCarded from '@fuse/core/FusePageCarded';
-import { useForm, useDeepCompareEffect } from '@fuse/hooks';
-import FuseUtils from '@fuse/utils';
-import _ from '@lodash';
 import Button from '@material-ui/core/Button';
 import { orange } from '@material-ui/core/colors';
 import Icon from '@material-ui/core/Icon';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import withReducer from 'app/store/withReducer';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { resetProduct, saveProduct, newProduct, getProduct } from '../store/productSlice';
+import { withRouter } from 'react-router-dom';
 
-import reducer from '../store';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Switch from '@material-ui/core/Switch';
+import Backend from '@fuse/utils/BackendUrl';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
 	productImageFeaturedStar: {
@@ -59,46 +63,78 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Product(props) {
-	const dispatch = useDispatch();
-	const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
+	const routeParams = useParams();
 	const theme = useTheme();
-
 	const classes = useStyles(props);
 	const [tabValue, setTabValue] = useState(0);
 	const [noProduct, setNoProduct] = useState(false);
-	const { form, handleChange, setForm, setInForm } = useForm(null);
-	const routeParams = useParams();
+	const [loading, setLoading] = useState(true);
+	const [status, setStatus] = useState('new');
 
-	useDeepCompareEffect(() => {
-		function updateProductState() {
-			const { productId } = routeParams;
+	const [form, setForm] = useState({
+		id: 0,
+		name: "",
+		short_description: "",
+		long_description: "",
+		main_menu: 1,
+		sub_menu: 1,
+		free_v: "off",
+		pro_v: "off",
+		local_v: "off",
+		p_image: "",
+		featured_images: [],
+		free_blend: "",
+		pro_blend: "",
+		local_blend: "",
+		created: ""
+	});
+	const [menus, setMenus] = useState([]);
+	const [submenus, setSubmenus] = useState([]);
 
-			if (productId === 'new') {
-				dispatch(newProduct());
-			} else {
-				dispatch(getProduct(routeParams)).then(action => {
-					if (!action.payload) {
-						setNoProduct(true);
-					}
-				});
-			}
-		}
+	const init = async () => {
+		const res1 = await axios.post(Backend.URL + '/get_submenu');
+		setSubmenus(res1.data);
+		const res2 = await axios.post(Backend.URL + '/get_menu');
+		setMenus(res2.data);
 
-		updateProductState();
-	}, [dispatch, routeParams]);
-
-	useEffect(() => {
-		if ((product && !form) || (product && form && product.id !== form.id)) {
-			setForm(product);
-		}
-	}, [form, product, setForm]);
-
-	useEffect(() => {
-		return () => {
-			dispatch(resetProduct());
+		if (routeParams.productId === 'new') {
+			setForm({
+				id: 0,
+				name: "",
+				short_description: "",
+				long_description: "",
+				main_menu: 1,
+				sub_menu: 1,
+				free_v: "off",
+				pro_v: "off",
+				local_v: "off",
+				p_image: "",
+				featured_images: [],
+				free_blend: "",
+				pro_blend: "",
+				local_blend: "",
+				created: ""
+			});
+			setStatus('new');
 			setNoProduct(false);
-		};
-	}, [dispatch]);
+		} else {
+			const resp = await axios.post(Backend.URL + '/get_product_id', {id: routeParams.productId});
+			// console.log(resp.data);
+			let data = resp.data[0][0];
+			if (data) {
+				setForm({...data, featured_images: data.featured_images.split('|')});
+				setNoProduct(false);
+			} else {
+				setNoProduct(true);
+			}
+			setStatus('old');
+		}
+	}
+
+	useEffect(()=>{
+		init();
+		setLoading(false);
+	}, [routeParams]);
 
 	function handleChangeTab(event, value) {
 		setTabValue(value);
@@ -113,16 +149,16 @@ function Product(props) {
 		reader.readAsBinaryString(file);
 
 		reader.onload = () => {
-			setForm(
-				_.set({ ...form }, `images`, [
-					{
-						id: FuseUtils.generateGUID(),
-						url: `data:${file.type};base64,${btoa(reader.result)}`,
-						type: 'image'
-					},
-					...form.images
-				])
-			);
+			// setForm(
+			// 	_.set({ ...form }, `images`, [
+			// 		{
+			// 			id: FuseUtils.generateGUID(),
+			// 			url: `data:${file.type};base64,${btoa(reader.result)}`,
+			// 			type: 'image'
+			// 		},
+			// 		...form.images
+			// 	])
+			// );
 		};
 
 		reader.onerror = () => {
@@ -131,7 +167,31 @@ function Product(props) {
 	}
 
 	function canBeSubmitted() {
-		return form.name.length > 0 && !_.isEqual(product, form);
+		return form.name && form.name.length > 0;
+	}
+
+	function saveProduct() {
+		if(status === 'new') {
+			axios.post(Backend.URL + '/add_product', form).then(function(resp){
+				if(resp.data.id) {
+					props.history.push(`/apps/e-commerce/products`);
+				} else {
+					alert('failed');
+				}
+			}).catch(function(err){
+				console.log(err);
+			});
+		} else {
+			axios.post(Backend.URL + '/edit_product', form).then(function(resp){
+				if(resp.data.id) {
+					props.history.push(`/apps/e-commerce/products`);
+				} else {
+					alert('failed');
+				}
+			}).catch(function(err){
+				console.log(err);
+			});
+		}
 	}
 
 	if (noProduct) {
@@ -155,7 +215,7 @@ function Product(props) {
 		);
 	}
 
-	if ((!product || (product && routeParams.productId !== product.id)) && routeParams.productId !== 'new') {
+	if (loading) {
 		return <FuseLoading />;
 	}
 
@@ -186,10 +246,10 @@ function Product(props) {
 
 							<div className="flex items-center max-w-full">
 								<FuseAnimate animation="transition.expandIn" delay={300}>
-									{form.images.length > 0 && form.featuredImageId ? (
+									{form.p_image ? (
 										<img
 											className="w-32 sm:w-48 rounded"
-											src={_.find(form.images, { id: form.featuredImageId }).url}
+											src={form.p_image}
 											alt={form.name}
 										/>
 									) : (
@@ -218,7 +278,7 @@ function Product(props) {
 								variant="contained"
 								color="secondary"
 								disabled={!canBeSubmitted()}
-								onClick={() => dispatch(saveProduct(form))}
+								onClick={saveProduct}
 							>
 								Save
 							</Button>
@@ -238,9 +298,10 @@ function Product(props) {
 				>
 					<Tab className="h-64" label="Basic Info" />
 					<Tab className="h-64" label="Product Images" />
-					<Tab className="h-64" label="Pricing" />
-					<Tab className="h-64" label="Inventory" />
-					<Tab className="h-64" label="Shipping" />
+					<Tab className="h-64" label="Free Blends" />
+					<Tab className="h-64" label="Pro Blends" />
+					<Tab className="h-64" label="Platinum Blends" />
+					<Tab className="h-64" label="Membership Level" />
 				</Tabs>
 			}
 			content={
@@ -257,60 +318,85 @@ function Product(props) {
 									id="name"
 									name="name"
 									value={form.name}
-									onChange={handleChange}
+									onChange={(e)=>{setForm({...form, name:e.target.value})}}
 									variant="outlined"
 									fullWidth
 								/>
 
 								<TextField
 									className="mt-8 mb-16"
-									id="description"
-									name="description"
-									onChange={handleChange}
-									label="Description"
+									id="short_description"
+									name="short_description"
+									onChange={(e)=>{setForm({...form, short_description:e.target.value})}}
+									label="Short Description"
 									type="text"
-									value={form.description}
+									value={form.short_description}
 									multiline
-									rows={5}
+									rows={3}
 									variant="outlined"
 									fullWidth
 								/>
 
-								<FuseChipSelect
-									className="mt-8 mb-24"
-									value={form.categories.map(item => ({
-										value: item,
-										label: item
-									}))}
-									onChange={value => setInForm('categories', value)}
-									placeholder="Select multiple categories"
-									textFieldProps={{
-										label: 'Categories',
-										InputLabelProps: {
-											shrink: true
-										},
-										variant: 'outlined'
-									}}
-									isMulti
-								/>
-
-								<FuseChipSelect
+								<TextField
 									className="mt-8 mb-16"
-									value={form.tags.map(item => ({
-										value: item,
-										label: item
-									}))}
-									onChange={value => setInForm('tags', value)}
-									placeholder="Select multiple tags"
-									textFieldProps={{
-										label: 'Tags',
-										InputLabelProps: {
-											shrink: true
-										},
-										variant: 'outlined'
-									}}
-									isMulti
+									id="long_description"
+									name="long_description"
+									onChange={(e)=>{setForm({...form, long_description:e.target.value})}}
+									label="Long Description"
+									type="text"
+									value={form.long_description}
+									multiline
+									rows={7}
+									variant="outlined"
+									fullWidth
 								/>
+								
+								<FormControl className="mt-16 mb-16" fullWidth required variant="outlined">
+									<InputLabel htmlFor="main-menu"> Main Menu </InputLabel>
+									<Select
+										value={form.main_menu}
+										onChange={(e)=>{setForm({...form, main_menu:e.target.value})}}
+										input={
+											<OutlinedInput
+												labelWidth={'main-menu'.length * 9}
+												name="main-menu"
+												id="main-menu"
+											/>
+										}
+									>
+										{menus.map((menu) => {
+											return (
+												<MenuItem value={menu.id} key={menu.id}>
+													<em> {menu.name} </em>
+												</MenuItem>
+											)
+										})}
+									</Select>
+								</FormControl>
+								
+								<FormControl className="mt-16 mb-16" fullWidth required variant="outlined">
+									<InputLabel htmlFor="sub-menu"> Sub Menu </InputLabel>
+									<Select
+										value={form.sub_menu}
+										onChange={(e)=>{setForm({...form, sub_menu:e.target.value})}}
+										input={
+											<OutlinedInput
+												labelWidth={'sub-menu'.length * 9}
+												name="sub-menu"
+												id="sub-menu"
+											/>
+										}
+									>
+										{submenus.filter(submenu => form.main_menu === submenu.m_id).map((sm) => {
+											return (
+												<MenuItem value={sm.id} key={sm.id}>
+													<em> {sm.name} </em>
+												</MenuItem>
+											)
+										} )}
+									</Select>
+								</FormControl>
+
 							</div>
 						)}
 						{tabValue === 1 && (
@@ -334,10 +420,10 @@ function Product(props) {
 											cloud_upload
 										</Icon>
 									</label>
-									{form.images.map(media => (
+									{form.featured_images.map(media => (
 										<div
-											onClick={() => setInForm('featuredImageId', media.id)}
-											onKeyDown={() => setInForm('featuredImageId', media.id)}
+											// onClick={() => setInForm('featuredImageId', media.id)}
+											// onKeyDown={() => setInForm('featuredImageId', media.id)}
 											role="button"
 											tabIndex={0}
 											className={clsx(
@@ -356,159 +442,150 @@ function Product(props) {
 						)}
 						{tabValue === 2 && (
 							<div>
-								<TextField
-									className="mt-8 mb-16"
-									label="Tax Excluded Price"
-									id="priceTaxExcl"
-									name="priceTaxExcl"
-									value={form.priceTaxExcl}
-									onChange={handleChange}
-									InputProps={{
-										startAdornment: <InputAdornment position="start">$</InputAdornment>
-									}}
-									type="number"
-									variant="outlined"
-									autoFocus
-									fullWidth
-								/>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Tax Included Price"
-									id="priceTaxIncl"
-									name="priceTaxIncl"
-									value={form.priceTaxIncl}
-									onChange={handleChange}
-									InputProps={{
-										startAdornment: <InputAdornment position="start">$</InputAdornment>
-									}}
-									type="number"
-									variant="outlined"
-									fullWidth
-								/>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Tax Rate"
-									id="taxRate"
-									name="taxRate"
-									value={form.taxRate}
-									onChange={handleChange}
-									InputProps={{
-										startAdornment: <InputAdornment position="start">$</InputAdornment>
-									}}
-									type="number"
-									variant="outlined"
-									fullWidth
-								/>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Compared Price"
-									id="comparedPrice"
-									name="comparedPrice"
-									value={form.comparedPrice}
-									onChange={handleChange}
-									InputProps={{
-										startAdornment: <InputAdornment position="start">$</InputAdornment>
-									}}
-									type="number"
-									variant="outlined"
-									fullWidth
-									helperText="Add a compare price to show next to the real price"
-								/>
+								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											accept="image/*"
+											className="hidden"
+											id="button-file"
+											type="file"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.featured_images.map(media => (
+										<div
+											// onClick={() => setInForm('featuredImageId', media.id)}
+											// onKeyDown={() => setInForm('featuredImageId', media.id)}
+											role="button"
+											tabIndex={0}
+											className={clsx(
+												classes.productImageItem,
+												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg',
+												media.id === form.featuredImageId && 'featured'
+											)}
+											key={media.id}
+										>
+											<Icon className={classes.productImageFeaturedStar}>star</Icon>
+											<img className="max-w-none w-auto h-full" src={media.url} alt="product" />
+										</div>
+									))}
+								</div>
 							</div>
 						)}
 						{tabValue === 3 && (
 							<div>
-								<TextField
-									className="mt-8 mb-16"
-									required
-									label="SKU"
-									autoFocus
-									id="sku"
-									name="sku"
-									value={form.sku}
-									onChange={handleChange}
-									variant="outlined"
-									fullWidth
-								/>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Quantity"
-									id="quantity"
-									name="quantity"
-									value={form.quantity}
-									onChange={handleChange}
-									variant="outlined"
-									type="number"
-									fullWidth
-								/>
+								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											accept="image/*"
+											className="hidden"
+											id="button-file"
+											type="file"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.featured_images.map(media => (
+										<div
+											// onClick={() => setInForm('featuredImageId', media.id)}
+											// onKeyDown={() => setInForm('featuredImageId', media.id)}
+											role="button"
+											tabIndex={0}
+											className={clsx(
+												classes.productImageItem,
+												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg',
+												media.id === form.featuredImageId && 'featured'
+											)}
+											key={media.id}
+										>
+											<Icon className={classes.productImageFeaturedStar}>star</Icon>
+											<img className="max-w-none w-auto h-full" src={media.url} alt="product" />
+										</div>
+									))}
+								</div>
 							</div>
 						)}
 						{tabValue === 4 && (
 							<div>
-								<div className="flex -mx-4">
-									<TextField
-										className="mt-8 mb-16 mx-4"
-										label="Width"
-										autoFocus
-										id="width"
-										name="width"
-										value={form.width}
-										onChange={handleChange}
-										variant="outlined"
-										fullWidth
-									/>
-
-									<TextField
-										className="mt-8 mb-16 mx-4"
-										label="Height"
-										id="height"
-										name="height"
-										value={form.height}
-										onChange={handleChange}
-										variant="outlined"
-										fullWidth
-									/>
-
-									<TextField
-										className="mt-8 mb-16 mx-4"
-										label="Depth"
-										id="depth"
-										name="depth"
-										value={form.depth}
-										onChange={handleChange}
-										variant="outlined"
-										fullWidth
-									/>
+								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											accept="image/*"
+											className="hidden"
+											id="button-file"
+											type="file"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.featured_images.map(media => (
+										<div
+											// onClick={() => setInForm('featuredImageId', media.id)}
+											// onKeyDown={() => setInForm('featuredImageId', media.id)}
+											role="button"
+											tabIndex={0}
+											className={clsx(
+												classes.productImageItem,
+												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg',
+												media.id === form.featuredImageId && 'featured'
+											)}
+											key={media.id}
+										>
+											<Icon className={classes.productImageFeaturedStar}>star</Icon>
+											<img className="max-w-none w-auto h-full" src={media.url} alt="product" />
+										</div>
+									))}
 								</div>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Weight"
-									id="weight"
-									name="weight"
-									value={form.weight}
-									onChange={handleChange}
-									variant="outlined"
-									fullWidth
-								/>
-
-								<TextField
-									className="mt-8 mb-16"
-									label="Extra Shipping Fee"
-									id="extraShippingFee"
-									name="extraShippingFee"
-									value={form.extraShippingFee}
-									onChange={handleChange}
-									variant="outlined"
-									InputProps={{
-										startAdornment: <InputAdornment position="start">$</InputAdornment>
-									}}
-									fullWidth
-								/>
+							</div>
+						)}
+						{tabValue === 5 && (
+							<div>
+								<FormControl component="fieldset">
+									<FormLabel component="legend">Membership Accessibility</FormLabel>
+										<FormGroup>
+											<FormControlLabel
+											control={<Switch checked={form.free_v === 'on' ? true : false} name="free" />}
+											label="Free Verion"
+											onClick={()=>{setForm({...form, free_v: form.free_v === 'on' ? 'off' : 'on'})}}
+											/>
+											<FormControlLabel
+											control={<Switch checked={form.pro_v === 'on' ? true : false} name="pro" />}
+											label="Pro Version"
+											onClick={()=>{setForm({...form, pro_v: form.pro_v === 'on' ? 'off' : 'on'})}}
+											/>
+											<FormControlLabel
+											control={<Switch checked={form.local_v === 'on' ? true : false} name="local" />}
+											label="Local Pro Version"
+											onClick={()=>{setForm({...form, local_v: form.local_v === 'on' ? 'off' : 'on'})}}
+											/>
+										</FormGroup>
+									<FormHelperText>Be careful</FormHelperText>
+								</FormControl>
 							</div>
 						)}
 					</div>
@@ -519,4 +596,4 @@ function Product(props) {
 	);
 }
 
-export default withReducer('eCommerceApp', reducer)(Product);
+export default withRouter(Product);

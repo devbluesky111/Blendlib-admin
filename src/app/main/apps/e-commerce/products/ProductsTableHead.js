@@ -33,31 +33,31 @@ const rows = [
 		sort: true
 	},
 	{
-		id: 'categories',
+		id: 'main_menu',
 		align: 'left',
 		disablePadding: false,
-		label: 'Category',
+		label: 'Main Menu',
 		sort: true
 	},
 	{
-		id: 'priceTaxIncl',
-		align: 'right',
+		id: 'sub_menu',
+		align: 'left',
 		disablePadding: false,
-		label: 'Price',
+		label: 'Sub Menu',
 		sort: true
 	},
 	{
-		id: 'quantity',
-		align: 'right',
+		id: 'date',
+		align: 'left',
 		disablePadding: false,
-		label: 'Quantity',
+		label: 'Date',
 		sort: true
 	},
 	{
-		id: 'active',
-		align: 'right',
+		id: 'version',
+		align: 'left',
 		disablePadding: false,
-		label: 'Active',
+		label: 'Version Status',
 		sort: true
 	}
 ];

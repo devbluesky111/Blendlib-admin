@@ -33,6 +33,7 @@ function Menus() {
 		setItems(res.data);
 		const resp = await axios.post(Backend.URL + '/get_menu');
 		setMenus(resp.data);
+		setLoading(false);
 	}
 
 	const addMenuData = () => {
@@ -108,7 +109,6 @@ function Menus() {
 
 	useEffect(() => {
 		init();
-		setLoading(false);
 	}, []);
 
 	if (loading) {
