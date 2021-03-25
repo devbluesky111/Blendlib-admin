@@ -93,6 +93,7 @@ function Product(props) {
 
 	useEffect(()=>{
 		const init = async () => {
+			setLoading(true);
 			const res1 = await axios.post(Backend.URL + '/get_submenu');
 			setSubmenus(res1.data);
 			const res2 = await axios.post(Backend.URL + '/get_menu');
@@ -130,10 +131,10 @@ function Product(props) {
 				}
 				setStatus('old');
 			}
+			setLoading(false);
 		}
 
 		init();
-		setLoading(false);
 	}, [routeParams]);
 
 	function handleChangeTab(event, value) {

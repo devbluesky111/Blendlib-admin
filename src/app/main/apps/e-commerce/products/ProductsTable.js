@@ -36,17 +36,18 @@ function ProductsTable(props) {
 	const [submenus, setSubmenus] = useState([]);
 
 	const init = async () => {
+		setLoading(true);
 		const res1 = await axios.post(Backend.URL + '/get_submenu');
 		setSubmenus(res1.data);
 		const res2 = await axios.post(Backend.URL + '/get_menu');
 		setMenus(res2.data);
 		const res = await axios.post(Backend.URL + '/get_products');
 		setProducts(res.data);
+		setLoading(false);
 	}
 
 	useEffect(() => {
 		init();
-		setLoading(false);
 	}, []);
 
 	useEffect(() => {
