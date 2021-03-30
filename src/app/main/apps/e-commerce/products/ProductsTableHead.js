@@ -52,10 +52,10 @@ const rows = [
 		sort: true
 	},
 	{
-		id: 'version',
+		id: 'platinum',
 		align: 'left',
 		disablePadding: false,
-		label: 'Version Status',
+		label: 'Platinum',
 		sort: true
 	}
 ];

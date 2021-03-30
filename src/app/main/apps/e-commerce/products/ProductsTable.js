@@ -230,10 +230,8 @@ function ProductsTable(props) {
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.free_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}	
-											{n.pro_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}	
-											{n.local_v === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}									
-										</TableCell>
+											{n.platinum === 'on' ? (<Icon className="text-green text-20">check_circle</Icon>) : (<Icon className="text-red text-20">remove_circle</Icon>)}	
+											</TableCell>
 									</TableRow>
 								);
 							})}

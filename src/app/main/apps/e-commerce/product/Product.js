@@ -78,14 +78,12 @@ function Product(props) {
 		long_description: "",
 		main_menu: 1,
 		sub_menu: 1,
-		free_v: "off",
-		pro_v: "off",
-		local_v: "off",
+		platinum: "off",
 		p_image: "",
 		featured_images: [],
-		free_blend: "",
-		pro_blend: "",
-		local_blend: "",
+		free_blend: [],
+		pro_blend: [],
+		local_blend: [],
 		created: ""
 	});
 	const [menus, setMenus] = useState([]);
@@ -107,14 +105,12 @@ function Product(props) {
 					long_description: "",
 					main_menu: 1,
 					sub_menu: 1,
-					free_v: "off",
-					pro_v: "off",
-					local_v: "off",
+					platinum: "off",
 					p_image: "",
 					featured_images: [],
-					free_blend: "",
-					pro_blend: "",
-					local_blend: "",
+					free_blend: [],
+					pro_blend: [],
+					local_blend: [],
 					created: ""
 				});
 				setStatus('new');
@@ -124,7 +120,7 @@ function Product(props) {
 				// console.log(resp.data);
 				let data = resp.data[0][0];
 				if (data) {
-					setForm({...data, featured_images: data.featured_images.split('|')});
+					setForm({...data, featured_images: data.featured_images.split('|'), free_blend: data.free_blend.split('|'), pro_blend: data.pro_blend.split('|'), local_blend: data.local_blend.split('|')});
 					setNoProduct(false);
 				} else {
 					setNoProduct(true);
@@ -161,7 +157,7 @@ function Product(props) {
 
 		if(res.data.file) {
 			let temp = form;
-			if(name === 'featured_images')
+			if(name === 'featured_images' || name === 'free_blend' || name === 'pro_blend' || name === 'local_blend')
 				temp[name] = res.data.file.split('|');
 			else
 				temp[name] = res.data.file;
@@ -435,19 +431,9 @@ function Product(props) {
 									<FormLabel component="legend">Membership Accessibility</FormLabel>
 										<FormGroup>
 											<FormControlLabel
-											control={<Switch checked={form.free_v === 'on' ? true : false} name="free" />}
-											label="Free Verion"
-											onClick={()=>{setForm({...form, free_v: form.free_v === 'on' ? 'off' : 'on'})}}
-											/>
-											<FormControlLabel
-											control={<Switch checked={form.pro_v === 'on' ? true : false} name="pro" />}
-											label="Pro Version"
-											onClick={()=>{setForm({...form, pro_v: form.pro_v === 'on' ? 'off' : 'on'})}}
-											/>
-											<FormControlLabel
-											control={<Switch checked={form.local_v === 'on' ? true : false} name="local" />}
-											label="Platinum Version"
-											onClick={()=>{setForm({...form, local_v: form.local_v === 'on' ? 'off' : 'on'})}}
+											control={<Switch checked={form.platinum === 'on' ? true : false} name="free" />}
+											label="Platinum"
+											onClick={()=>{setForm({...form, platinum: form.platinum === 'on' ? 'off' : 'on'})}}
 											/>
 										</FormGroup>
 									<FormHelperText>Be careful</FormHelperText>
@@ -542,138 +528,156 @@ function Product(props) {
 								</div>
 							</div>
 						)}
-						{tabValue === 4 && (
+						{tabValue === 4 && form.platinum === 'off' && (
 							<div>
 								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
-									{form.free_blend ? 
-										<>
-											<div
-												tabIndex={0}
-												className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
-											>
-												<Icon 
-													className={classes.productImageFeaturedStar} 
-													style={{color: '#333', opacity: 1, cursor: 'pointer'}} 
-													onClick={()=>{setForm({...form, free_blend: ''})}}
-												>
-													delete
-												</Icon>
-												<Icon fontSize="large" color="action">
-													cloud_download
-												</Icon>
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											className="hidden"
+											id="button-file"
+											type="file"
+											name="free_blend"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.free_blend.map((fm, _i) => {
+										return (
+											<div key={_i}>
+											{fm ? 
+												<>
+													<div
+														tabIndex={0}
+														className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
+													>
+														<Icon 
+															className={classes.productImageFeaturedStar} 
+															style={{color: '#333', opacity: 1, cursor: 'pointer'}}
+															onClick={()=>{setForm({...form, free_blend: removeA(form.free_blend, fm)})}}
+														>
+															delete
+														</Icon>
+														<Icon fontSize="large" color="action">
+															done
+														</Icon>
+													</div>
+													<div style={{width:'130px', wordWrap: 'break-word', paddingLeft:'20px'}}><a href={Backend.URL + '/blends/' + fm} target='_blank' rel='noopener noreferrer'>{fm.split('/')[1]}</a></div>
+												</>
+												: <></>
+											}
 											</div>
-											<p className="text-center">{form.free_blend}</p>
-										</>
-									:
-										<label
-											htmlFor="button-file"
-											className={clsx(
-												classes.productImageUpload,
-												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
-											)}
-										>
-											<input
-												className="hidden"
-												id="button-file"
-												type="file"
-												name="free_blend"
-												onChange={handleUploadChange}
-											/>
-											<Icon fontSize="large" color="action">
-												cloud_upload
-											</Icon>
-										</label>
-									}
+										);
+									})}
 								</div>
 							</div>
 						)}
-						{tabValue === 5 && (
+						{tabValue === 5 && form.platinum === 'off' && (
 							<div>
 								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
-									{form.pro_blend ? 
-										<>
-											<div
-												tabIndex={0}
-												className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
-											>
-												<Icon 
-													className={classes.productImageFeaturedStar} 
-													style={{color: '#333', opacity: 1, cursor: 'pointer'}} 
-													onClick={()=>{setForm({...form, pro_blend: ''})}}
-												>
-													delete
-												</Icon>
-												<Icon fontSize="large" color="action">
-													cloud_download
-												</Icon>
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											className="hidden"
+											id="button-file"
+											type="file"
+											name="pro_blend"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.pro_blend.map((fm, _i) => {
+										return (
+											<div key={_i}>
+											{fm ? 
+												<>
+													<div
+														tabIndex={0}
+														className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
+													>
+														<Icon 
+															className={classes.productImageFeaturedStar} 
+															style={{color: '#333', opacity: 1, cursor: 'pointer'}}
+															onClick={()=>{setForm({...form, pro_blend: removeA(form.pro_blend, fm)})}}
+														>
+															delete
+														</Icon>
+														<Icon fontSize="large" color="action">
+															done
+														</Icon>
+													</div>
+													<div style={{width:'130px', wordWrap: 'break-word', paddingLeft:'20px'}}><a href={Backend.URL + '/blends/' + fm} target='_blank' rel='noopener noreferrer'>{fm.split('/')[1]}</a></div>
+												</>
+												: <></>
+											}
 											</div>
-											<p className="text-center">{form.pro_blend}</p>
-										</>
-									:
-										<label
-											htmlFor="button-file"
-											className={clsx(
-												classes.productImageUpload,
-												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
-											)}
-										>
-											<input
-												className="hidden"
-												id="button-file"
-												type="file"
-												name="pro_blend"
-												onChange={handleUploadChange}
-											/>
-											<Icon fontSize="large" color="action">
-												cloud_upload
-											</Icon>
-										</label>
-									}
+										);
+									})}
 								</div>
 							</div>
 						)}
-						{tabValue === 6 && (
+						{tabValue === 6 && form.platinum === 'on' && (
 							<div>
 								<div className="flex justify-center sm:justify-start flex-wrap -mx-8">
-									{form.local_blend ? 
-										<>
-											<div
-												tabIndex={0}
-												className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
-											>
-												<Icon 
-													className={classes.productImageFeaturedStar} 
-													style={{color: '#333', opacity: 1, cursor: 'pointer'}} 
-													onClick={()=>{setForm({...form, local_blend: ''})}}
-												>
-													delete
-												</Icon>
-												<Icon fontSize="large" color="action">
-													cloud_download
-												</Icon>
+									<label
+										htmlFor="button-file"
+										className={clsx(
+											classes.productImageUpload,
+											'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
+										)}
+									>
+										<input
+											className="hidden"
+											id="button-file"
+											type="file"
+											name="local_blend"
+											onChange={handleUploadChange}
+										/>
+										<Icon fontSize="large" color="action">
+											cloud_upload
+										</Icon>
+									</label>
+									{form.local_blend.map((fm, _i) => {
+										return (
+											<div key={_i}>
+											{fm ? 
+												<>
+													<div
+														tabIndex={0}
+														className='flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden outline-none shadow hover:shadow-lg'
+													>
+														<Icon 
+															className={classes.productImageFeaturedStar} 
+															style={{color: '#333', opacity: 1, cursor: 'pointer'}}
+															onClick={()=>{setForm({...form, local_blend: removeA(form.local_blend, fm)})}}
+														>
+															delete
+														</Icon>
+														<Icon fontSize="large" color="action">
+															done
+														</Icon>
+													</div>
+													<div style={{width:'130px', wordWrap: 'break-word', paddingLeft:'20px'}}><a href={Backend.URL + '/blends/' + fm} target='_blank' rel='noopener noreferrer'>{fm.split('/')[1]}</a></div>
+												</>
+												: <></>
+											}
 											</div>
-											<p className="text-center">{form.local_blend}</p>
-										</>
-									:
-										<label
-											htmlFor="button-file"
-											className={clsx(
-												classes.productImageUpload,
-												'flex items-center justify-center relative w-128 h-128 rounded-8 mx-8 mb-16 overflow-hidden cursor-pointer shadow hover:shadow-lg'
-											)}
-										>
-											<input
-												className="hidden"
-												id="button-file"
-												type="file"
-												name="local_blend"
-												onChange={handleUploadChange}
-											/>
-											<Icon fontSize="large" color="action">
-												cloud_upload
-											</Icon>
-										</label>
-									}
+										);
+									})}
 								</div>
 							</div>
 						)}
