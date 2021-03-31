@@ -1,20 +1,23 @@
 import FuseAnimate from '@fuse/core/FuseAnimate';
 import FuseUtils from '@fuse/utils';
 import Avatar from '@material-ui/core/Avatar';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ContactsMultiSelectMenu from './ContactsMultiSelectMenu';
 import ContactsTable from './ContactsTable';
-import { openEditContactDialog, removeContact, toggleStarredContact, selectContacts } from './store/contactsSlice';
+import { openEditContactDialog, openPendingDialog, toggleRestrict, selectContacts } from './store/contactsSlice';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Badge from '@material-ui/core/Badge';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 
 function ContactsList(props) {
 	const dispatch = useDispatch();
 	const contacts = useSelector(selectContacts);
 	const searchText = useSelector(({ contactsApp }) => contactsApp.contacts.searchText);
-	const user = useSelector(({ contactsApp }) => contactsApp.user);
 
 	const [filteredData, setFilteredData] = useState(null);
 
@@ -29,8 +32,8 @@ function ContactsList(props) {
 					);
 				},
 				accessor: 'avatar',
-				Cell: ({ row }) => {
-					return <Avatar className="mx-8" alt={row.original.name} src={row.original.avatar} />;
+				Cell: () => {
+					return <Avatar className="mx-8" />;
 				},
 				className: 'justify-center',
 				width: 64,
@@ -49,14 +52,35 @@ function ContactsList(props) {
 				sortable: true
 			},
 			{
-				Header: 'Company',
-				accessor: 'company',
-				sortable: true
+				Header: 'Membership',
+				accessor: 'membership',
+				sortable: true,
+				Cell: ({ row }) => (
+					<Badge
+						color={row.original.membership === 'free' ? 'primary' : row.original.membership === 'pro' ? 'secondary' : row.original.membership === 'platinum' ? 'error' : ''}
+						badgeContent={row.original.membership}
+						style={{paddingLeft:'30px'}}
+					/>
+				)
 			},
 			{
-				Header: 'Job Title',
-				accessor: 'jobTitle',
-				sortable: true
+				Header: 'Restrict Status',
+				accessor: 'status',
+				sortable: true,
+				Cell: ({ row }) => (
+					<div className="flex items-center">
+						<FormGroup>
+							<FormControlLabel
+							control={<Switch checked={row.original.status === 'on' ? true : false} name="status" />}
+							label="Status"
+							onClick={ev => {
+								ev.stopPropagation();
+								dispatch(toggleRestrict({id: row.original.id, status: row.original.status}));
+							}}
+							/>
+						</FormGroup>
+					</div>
+				)
 			},
 			{
 				Header: 'Email',
@@ -64,41 +88,39 @@ function ContactsList(props) {
 				sortable: true
 			},
 			{
-				Header: 'Phone',
-				accessor: 'phone',
+				Header: 'Password',
+				accessor: 'password',
 				sortable: true
 			},
 			{
-				id: 'action',
-				width: 128,
+				Header: 'Action Pending',
+				accessor: 'action',
 				sortable: false,
 				Cell: ({ row }) => (
-					<div className="flex items-center">
-						<IconButton
-							onClick={ev => {
-								ev.stopPropagation();
-								dispatch(toggleStarredContact(row.original.id));
-							}}
+					<>
+					{row.original.pending === 'no' ?
+						<></>
+					:
+						<div
+						onClick={e=>{
+							e.stopPropagation();
+							dispatch(openPendingDialog(row.original));
+						}}
 						>
-							{user.starred && user.starred.includes(row.original.id) ? (
-								<Icon>star</Icon>
-							) : (
-								<Icon>star_border</Icon>
-							)}
-						</IconButton>
-						<IconButton
-							onClick={ev => {
-								ev.stopPropagation();
-								dispatch(removeContact(row.original.id));
-							}}
-						>
-							<Icon>delete</Icon>
-						</IconButton>
-					</div>
+							<IconButton
+								className="p-0"
+								aria-haspopup="true"
+							>
+								<Icon>more_horiz</Icon>
+							</IconButton>
+							<span style={row.original.pending === 'pro' ? {color: '#61dafb'} : {color: '#f44336'}}> {row.original.pending} ?</span>
+						</div>
+					}
+					</>
 				)
 			}
 		],
-		[dispatch, user.starred]
+		[dispatch]
 	);
 
 	useEffect(() => {

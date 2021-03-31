@@ -793,15 +793,15 @@ const navigationConfig = [
 		title: 'Applications',
 		translate: 'APPLICATIONS',
 		type: 'group',
-		icon: 'apps',
+		icon: 'assessment',
 		children: [
 			{
-				id: 'calendar',
-				title: 'Calendar',
-				translate: 'CALENDAR',
+				id: 'dashboards',
+				title: 'Dashboards',
+				translate: 'DASHBOARDS',
 				type: 'item',
-				icon: 'today',
-				url: '/apps/calendar'
+				icon: 'dashboard',
+				url: '/apps/dashboards/analytics'
 			},
 			{
 				id: 'e-commerce',
@@ -842,84 +842,84 @@ const navigationConfig = [
 				]
 			},
 			{
-				id: 'academy',
-				title: 'Academy',
-				translate: 'ACADEMY',
-				type: 'item',
-				icon: 'school',
-				url: '/apps/academy'
-			},
-			{
-				id: 'mail',
-				title: 'Mail',
-				translate: 'MAIL',
-				type: 'item',
-				icon: 'email',
-				url: '/apps/mail',
-				badge: {
-					title: 25,
-					bg: '#F44336',
-					fg: '#FFFFFF'
-				}
-			},
-			{
-				id: 'todo',
-				title: 'To-Do',
-				translate: 'TODO',
-				type: 'item',
-				icon: 'check_box',
-				url: '/apps/todo',
-				badge: {
-					title: 3,
-					bg: 'rgb(255, 111, 0)',
-					fg: '#FFFFFF'
-				}
-			},
-			{
-				id: 'file-manager',
-				title: 'File Manager',
-				translate: 'FILE_MANAGER',
-				type: 'item',
-				icon: 'folder',
-				url: '/apps/file-manager'
-			},
-			{
 				id: 'contacts',
 				title: 'Contacts',
-				translate: 'CONTACTS',
+				translate: 'Users',
 				type: 'item',
 				icon: 'account_box',
 				url: '/apps/contacts/all'
 			},
-			{
-				id: 'chat',
-				title: 'Chat',
-				translate: 'CHAT',
-				type: 'item',
-				icon: 'chat',
-				url: '/apps/chat',
-				badge: {
-					title: 13,
-					bg: 'rgb(9, 210, 97)',
-					fg: '#FFFFFF'
-				}
-			},
-			{
-				id: 'scrumboard',
-				title: 'Scrumboard',
-				translate: 'SCRUMBOARD',
-				type: 'item',
-				icon: 'assessment',
-				url: '/apps/scrumboard'
-			},
-			{
-				id: 'notes',
-				title: 'Notes',
-				translate: 'NOTES',
-				type: 'item',
-				icon: 'note',
-				url: '/apps/notes'
-			}
+			// {
+			// 	id: 'academy',
+			// 	title: 'Academy',
+			// 	translate: 'ACADEMY',
+			// 	type: 'item',
+			// 	icon: 'school',
+			// 	url: '/apps/academy'
+			// },
+			// {
+			// 	id: 'mail',
+			// 	title: 'Mail',
+			// 	translate: 'MAIL',
+			// 	type: 'item',
+			// 	icon: 'email',
+			// 	url: '/apps/mail',
+			// 	badge: {
+			// 		title: 25,
+			// 		bg: '#F44336',
+			// 		fg: '#FFFFFF'
+			// 	}
+			// },
+			// {
+			// 	id: 'todo',
+			// 	title: 'To-Do',
+			// 	translate: 'TODO',
+			// 	type: 'item',
+			// 	icon: 'check_box',
+			// 	url: '/apps/todo',
+			// 	badge: {
+			// 		title: 3,
+			// 		bg: 'rgb(255, 111, 0)',
+			// 		fg: '#FFFFFF'
+			// 	}
+			// },
+			// {
+			// 	id: 'file-manager',
+			// 	title: 'File Manager',
+			// 	translate: 'FILE_MANAGER',
+			// 	type: 'item',
+			// 	icon: 'folder',
+			// 	url: '/apps/file-manager'
+			// },
+			// {
+			// 	id: 'chat',
+			// 	title: 'Chat',
+			// 	translate: 'CHAT',
+			// 	type: 'item',
+			// 	icon: 'chat',
+			// 	url: '/apps/chat',
+			// 	badge: {
+			// 		title: 13,
+			// 		bg: 'rgb(9, 210, 97)',
+			// 		fg: '#FFFFFF'
+			// 	}
+			// },
+			// {
+			// 	id: 'scrumboard',
+			// 	title: 'Scrumboard',
+			// 	translate: 'SCRUMBOARD',
+			// 	type: 'item',
+			// 	icon: 'assessment',
+			// 	url: '/apps/scrumboard'
+			// },
+			// {
+			// 	id: 'notes',
+			// 	title: 'Notes',
+			// 	translate: 'NOTES',
+			// 	type: 'item',
+			// 	icon: 'note',
+			// 	url: '/apps/notes'
+			// }
 		]
 	}
 ];

@@ -1,5 +1,4 @@
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/utils/FuseUtils';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -20,12 +19,16 @@ import {
 	closeNewContactDialog,
 	closeEditContactDialog
 } from './store/contactsSlice';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 const defaultFormState = {
-	id: '',
+	id: 0,
 	name: '',
 	lastName: '',
-	avatar: 'assets/images/avatars/profile.jpg',
 	nickname: '',
 	company: '',
 	jobTitle: '',
@@ -33,7 +36,11 @@ const defaultFormState = {
 	phone: '',
 	address: '',
 	birthday: '',
-	notes: ''
+	notes: '',
+	password: '',
+	membership: 'free',
+	pending: 'no',
+	status: 'on'
 };
 
 function ContactDialog(props) {
@@ -55,9 +62,7 @@ function ContactDialog(props) {
 		 */
 		if (contactDialog.type === 'new') {
 			setForm({
-				...defaultFormState,
-				...contactDialog.data,
-				id: FuseUtils.generateGUID()
+				...defaultFormState
 			});
 		}
 	}, [contactDialog.data, contactDialog.type, setForm]);
@@ -76,7 +81,7 @@ function ContactDialog(props) {
 	}
 
 	function canBeSubmitted() {
-		return form.name.length > 0;
+		return form.name && form.name.length > 0;
 	}
 
 	function handleSubmit(event) {
@@ -173,22 +178,6 @@ function ContactDialog(props) {
 
 					<div className="flex">
 						<div className="min-w-48 pt-20">
-							<Icon color="action">phone</Icon>
-						</div>
-						<TextField
-							className="mb-24"
-							label="Phone"
-							id="phone"
-							name="phone"
-							value={form.phone}
-							onChange={handleChange}
-							variant="outlined"
-							fullWidth
-						/>
-					</div>
-
-					<div className="flex">
-						<div className="min-w-48 pt-20">
 							<Icon color="action">email</Icon>
 						</div>
 						<TextField
@@ -197,6 +186,38 @@ function ContactDialog(props) {
 							id="email"
 							name="email"
 							value={form.email}
+							onChange={handleChange}
+							variant="outlined"
+							fullWidth
+						/>
+					</div>
+
+					<div className="flex">
+						<div className="min-w-48 pt-20">
+							<Icon color="action">lock</Icon>
+						</div>
+						<TextField
+							className="mb-24"
+							label="Password"
+							id="password"
+							name="password"
+							value={form.password}
+							onChange={handleChange}
+							variant="outlined"
+							fullWidth
+						/>
+					</div>
+
+					<div className="flex">
+						<div className="min-w-48 pt-20">
+							<Icon color="action">phone</Icon>
+						</div>
+						<TextField
+							className="mb-24"
+							label="Phone"
+							id="phone"
+							name="phone"
+							value={form.phone}
 							onChange={handleChange}
 							variant="outlined"
 							fullWidth
@@ -245,7 +266,7 @@ function ContactDialog(props) {
 							label="Birthday"
 							type="date"
 							value={form.birthday}
-							onChange={handleChange}
+							onChange={(e)=>{setForm({...form, birthday: e.target.value})}}
 							InputLabelProps={{
 								shrink: true
 							}}
@@ -286,6 +307,36 @@ function ContactDialog(props) {
 							rows={5}
 							fullWidth
 						/>
+					</div>
+
+					<div className="flex">
+						<div className="min-w-48 pt-20">
+							<Icon color="action">question</Icon>
+						</div>
+						<FormControl className="mb-24" fullWidth required variant="outlined">
+							<InputLabel htmlFor="membership"> Membership </InputLabel>
+							<Select
+								value={form.membership}
+								onChange={handleChange}
+								input={
+									<OutlinedInput
+										labelWidth={'membership'.length * 9}
+										name="membership"
+										id="membership"
+									/>
+								}
+							>
+								<MenuItem value='free'>
+									<em> Free </em>
+								</MenuItem>
+								<MenuItem value='pro'>
+									<em> Pro </em>
+								</MenuItem>
+								<MenuItem value='platinum'>
+									<em> Platinum </em>
+								</MenuItem>
+							</Select>
+						</FormControl>
 					</div>
 				</DialogContent>
 

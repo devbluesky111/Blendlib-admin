@@ -5,12 +5,12 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useDeepCompareEffect } from '@fuse/hooks';
 import ContactDialog from './ContactDialog';
+import PendingDialog from './PendingDialog';
 import ContactsHeader from './ContactsHeader';
 import ContactsList from './ContactsList';
 import ContactsSidebarContent from './ContactsSidebarContent';
 import reducer from './store';
 import { getContacts } from './store/contactsSlice';
-import { getUserData } from './store/userSlice';
 
 function ContactsApp(props) {
 	const dispatch = useDispatch();
@@ -20,7 +20,6 @@ function ContactsApp(props) {
 
 	useDeepCompareEffect(() => {
 		dispatch(getContacts(routeParams));
-		dispatch(getUserData());
 	}, [dispatch, routeParams]);
 
 	return (
@@ -41,6 +40,7 @@ function ContactsApp(props) {
 				innerScroll
 			/>
 			<ContactDialog />
+			<PendingDialog />
 		</>
 	);
 }
