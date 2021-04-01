@@ -41,7 +41,7 @@ function ProductsTable(props) {
 		setSubmenus(res1.data);
 		const res2 = await axios.post(Backend.URL + '/get_menu');
 		setMenus(res2.data);
-		const res = await axios.post(Backend.URL + '/get_products');
+		const res = await axios.post(Backend.URL + '/get_products', {platinum: 'on'});
 		setProducts(res.data);
 		setLoading(false);
 	}
