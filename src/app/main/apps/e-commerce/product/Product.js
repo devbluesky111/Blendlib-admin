@@ -92,9 +92,9 @@ function Product(props) {
 	useEffect(()=>{
 		const init = async () => {
 			setLoading(true);
-			const res1 = await axios.post(Backend.URL + '/get_submenu');
+			const res1 = await axios.post(Backend.URL + '/get_submenu', {data: 0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 			setSubmenus(res1.data);
-			const res2 = await axios.post(Backend.URL + '/get_menu');
+			const res2 = await axios.post(Backend.URL + '/get_menu', {data: 0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 			setMenus(res2.data);
 
 			if (routeParams.productId === 'new') {
@@ -116,7 +116,7 @@ function Product(props) {
 				setStatus('new');
 				setNoProduct(false);
 			} else {
-				const resp = await axios.post(Backend.URL + '/get_product_id', {id: routeParams.productId});
+				const resp = await axios.post(Backend.URL + '/get_product_id', {id: routeParams.productId}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 				let data = resp.data[0][0];
 				if (data) {
 					setForm({...data, featured_images: data.featured_images.split('|'), free_blend: data.free_blend.split('|'), pro_blend: data.pro_blend.split('|'), local_blend: data.local_blend.split('|')});
@@ -148,11 +148,7 @@ function Product(props) {
 		formData.append("id", form.id);
 		formData.append("name", name);
 
-		const res = await axios.post(Backend.URL + '/upload', formData, {
-			headers: {
-			'Content-Type': 'multipart/form-data'
-			}
-		});
+		const res = await axios.post(Backend.URL + '/upload', formData, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*", 'Content-Type': 'multipart/form-data'} } );
 
 		if(res.data.file) {
 			let temp = form;
@@ -172,7 +168,7 @@ function Product(props) {
 
 	function saveProduct() {
 		if(status === 'new') {
-			axios.post(Backend.URL + '/add_product', form).then(function(resp){
+			axios.post(Backend.URL + '/add_product', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 				if(resp.data.id) {
 					props.history.push(`/apps/e-commerce/products`);
 				} else {
@@ -182,7 +178,7 @@ function Product(props) {
 				console.log(err);
 			});
 		} else {
-			axios.post(Backend.URL + '/edit_product', form).then(function(resp){
+			axios.post(Backend.URL + '/edit_product', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 				if(resp.data.id) {
 					props.history.push(`/apps/e-commerce/products`);
 				} else {

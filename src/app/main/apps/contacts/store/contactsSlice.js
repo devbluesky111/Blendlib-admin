@@ -4,9 +4,7 @@ import Backend from '@fuse/utils/BackendUrl';
 
 export const getContacts = createAsyncThunk('contactsApp/contacts/getContacts', async (routeParams, { getState }) => {
 	routeParams = routeParams || getState().contactsApp.contacts.routeParams;
-	const response = await axios.post(Backend.URL + '/get_all_users', {
-		params: routeParams.id
-	});
+	const response = await axios.post(Backend.URL + '/get_all_users', {params: routeParams.id}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 	const data = await response.data[0];
 
 	return { data, routeParams };
@@ -15,7 +13,7 @@ export const getContacts = createAsyncThunk('contactsApp/contacts/getContacts', 
 export const addContact = createAsyncThunk(
 	'contactsApp/contacts/addContact',
 	async (contact, { dispatch, getState }) => {
-		const response = await axios.post(Backend.URL + '/add_user', contact);
+		const response = await axios.post(Backend.URL + '/add_user', contact, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		const data = await response.data;
 
 		dispatch(getContacts());
@@ -27,7 +25,7 @@ export const addContact = createAsyncThunk(
 export const updateContact = createAsyncThunk(
 	'contactsApp/contacts/updateContact',
 	async (contact, { dispatch, getState }) => {
-		const response = await axios.post(Backend.URL + '/edit_user', contact);
+		const response = await axios.post(Backend.URL + '/edit_user', contact, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		const data = await response.data;
 
 		dispatch(getContacts());
@@ -39,7 +37,7 @@ export const updateContact = createAsyncThunk(
 export const removeContact = createAsyncThunk(
 	'contactsApp/contacts/removeContact',
 	async (contactId, { dispatch, getState }) => {
-		await axios.post(Backend.URL + '/delete_user', { ids : [contactId] });
+		await axios.post(Backend.URL + '/delete_user', { ids : [contactId] }, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 
 		dispatch(getContacts());
 
@@ -50,7 +48,7 @@ export const removeContact = createAsyncThunk(
 export const removeContacts = createAsyncThunk(
 	'contactsApp/contacts/removeContacts',
 	async (contactIds, { dispatch, getState }) => {
-		await axios.post(Backend.URL + '/delete_user', { ids: contactIds });
+		await axios.post(Backend.URL + '/delete_user', { ids: contactIds }, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 
 		dispatch(getContacts());
 
@@ -61,7 +59,7 @@ export const removeContacts = createAsyncThunk(
 export const toggleRestrict = createAsyncThunk(
 	'contactsApp/contacts/toggleRestrict',
 	async (restrict, { dispatch, getState }) => {
-		const response = await axios.post(Backend.URL + '/toggle_restrict', restrict);
+		const response = await axios.post(Backend.URL + '/toggle_restrict', restrict, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		const data = await response.data;
 
 		dispatch(getContacts());
@@ -73,7 +71,7 @@ export const toggleRestrict = createAsyncThunk(
 export const pendingContact = createAsyncThunk(
 	'contactsApp/contacts/pendingContact',
 	async (pending, { dispatch, getState }) => {
-		const response = await axios.post(Backend.URL + '/pending_solve', pending);
+		const response = await axios.post(Backend.URL + '/pending_solve', pending, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		const data = await response.data;
 
 		dispatch(getContacts());

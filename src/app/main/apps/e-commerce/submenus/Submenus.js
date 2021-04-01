@@ -29,9 +29,9 @@ function Menus() {
 	const [menus, setMenus] = useState([]);
 
 	const init = async () => {
-		const res = await axios.post(Backend.URL + '/get_submenu');
+		const res = await axios.post(Backend.URL + '/get_submenu', {data:0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setItems(res.data);
-		const resp = await axios.post(Backend.URL + '/get_menu');
+		const resp = await axios.post(Backend.URL + '/get_menu', {data:0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setMenus(resp.data);
 		setLoading(false);
 	}
@@ -41,7 +41,7 @@ function Menus() {
 			alert('Please fill out the required fields!');
 			return false;
 		}
-		axios.post(Backend.URL + '/add_submenu', form).then(function(resp){
+		axios.post(Backend.URL + '/add_submenu', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -55,7 +55,7 @@ function Menus() {
 			alert('Menu name is required!');
 			return false;
 		}
-		axios.post(Backend.URL + '/edit_submenu', form).then(function(resp){
+		axios.post(Backend.URL + '/edit_submenu', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -89,7 +89,7 @@ function Menus() {
 	}
 
 	const deleteMenu = () => {		
-		axios.post(Backend.URL + '/delete_submenu', {ids:[form.id]}).then(function(resp){
+		axios.post(Backend.URL + '/delete_submenu', {ids:[form.id]}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -99,7 +99,7 @@ function Menus() {
 	}
 
 	const deleteMenus = (ids) => {		
-		axios.post(Backend.URL + '/delete_submenu', {ids:ids}).then(function(resp){
+		axios.post(Backend.URL + '/delete_submenu', {ids:ids}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){

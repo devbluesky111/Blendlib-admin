@@ -37,11 +37,11 @@ function ProductsTable(props) {
 
 	const init = async () => {
 		setLoading(true);
-		const res1 = await axios.post(Backend.URL + '/get_submenu');
+		const res1 = await axios.post(Backend.URL + '/get_submenu', {data:0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setSubmenus(res1.data);
-		const res2 = await axios.post(Backend.URL + '/get_menu');
+		const res2 = await axios.post(Backend.URL + '/get_menu', {data:0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setMenus(res2.data);
-		const res = await axios.post(Backend.URL + '/get_products', {platinum: 'on'});
+		const res = await axios.post(Backend.URL + '/get_products', {platinum: 'on'}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setProducts(res.data);
 		setLoading(false);
 	}
@@ -82,7 +82,7 @@ function ProductsTable(props) {
 	}
 
 	async function handleDeselect() {
-		const resp = await axios.post(Backend.URL + '/delete_product', {ids: selected});
+		const resp = await axios.post(Backend.URL + '/delete_product', {ids: selected}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		if (resp.data.ids) {
 			setLoading(true);
 			init();

@@ -27,7 +27,7 @@ function Menus() {
 	const [items, setItems] = useState([]);
 
 	const init = async () => {
-		const res = await axios.post(Backend.URL + '/get_menu');
+		const res = await axios.post(Backend.URL + '/get_menu', {data: 0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setItems(res.data);
 		setLoading(false);
 	}
@@ -37,7 +37,7 @@ function Menus() {
 			alert('Please fill out the required fields!');
 			return false;
 		}
-		axios.post(Backend.URL + '/add_menu', form).then(function(resp){
+		axios.post(Backend.URL + '/add_menu', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -51,7 +51,7 @@ function Menus() {
 			alert('Menu name is required!');
 			return false;
 		}
-		axios.post(Backend.URL + '/edit_menu', form).then(function(resp){
+		axios.post(Backend.URL + '/edit_menu', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -81,7 +81,7 @@ function Menus() {
 	}
 
 	const deleteMenu = () => {		
-		axios.post(Backend.URL + '/delete_menu', {ids:[form.id]}).then(function(resp){
+		axios.post(Backend.URL + '/delete_menu', {ids:[form.id]}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
@@ -91,7 +91,7 @@ function Menus() {
 	}
 
 	const deleteMenus = (ids) => {		
-		axios.post(Backend.URL + '/delete_menu', {ids:ids}).then(function(resp){
+		axios.post(Backend.URL + '/delete_menu', {ids:ids}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
 			init();
 			setOpenDlg(false);
 		}).catch(function(err){
