@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function Product(props) {
+function Blog(props) {
 	const routeParams = useParams();
 	const theme = useTheme();
 	const classes = useStyles(props);
@@ -122,7 +122,7 @@ function Product(props) {
 					setForm({...data, featured_images: data.featured_images.split('|'), free_blend: data.free_blend.split('|'), pro_blend: data.pro_blend.split('|'), local_blend: data.local_blend.split('|')});
 					setNoProduct(false);
 				} else {
-					setNoProduct(true);
+					setNoProduct(false);
 				}
 				setStatus('old');
 			}
@@ -684,4 +684,4 @@ function Product(props) {
 	);
 }
 
-export default withRouter(Product);
+export default withRouter(Blog);

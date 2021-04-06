@@ -1,6 +1,7 @@
 // import AcademyAppConfig from './academy/AcademyAppConfig';
 // import CalendarAppConfig from './calendar/CalendarAppConfig';
 // import ChatAppConfig from './chat/ChatAppConfig';
+import BlogAppConfig from './blog/BlogAppConfig';
 import ContactsAppConfig from './contacts/ContactsAppConfig';
 import AnalyticsDashboardAppConfig from './dashboards/analytics/AnalyticsDashboardAppConfig';
 import ECommerceAppConfig from './e-commerce/ECommerceAppConfig';
@@ -20,6 +21,7 @@ const appsConfigs = [
 	ContactsAppConfig,
 	// CalendarAppConfig,
 	// ChatAppConfig,
+	BlogAppConfig,
 	ECommerceAppConfig,
 	// ScrumboardAppConfig,
 	// AcademyAppConfig,

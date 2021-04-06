@@ -9,19 +9,17 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import FuseLoading from '@fuse/core/FuseLoading';
 import FuseAnimate from '@fuse/core/FuseAnimate/FuseAnimate';
-import ProductsTableHead from './ProductsTableHead';
+import BlogsTableHead from './BlogsTableHead';
 import Backend from '@fuse/utils/BackendUrl';
 import axios from 'axios';
 import Moment from 'react-moment';
 import { withRouter } from 'react-router-dom';
 
 
-function ProductsTable(props) {
+function BlogsTable(props) {
 	const [products, setProducts] = useState([]);
-	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
 
 	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState([]);
@@ -51,13 +49,8 @@ function ProductsTable(props) {
 	}, []);
 
 	useEffect(() => {
-		if (searchText.length !== 0) {
-			setData(_.filter(products, item => item.name.toLowerCase().includes(searchText.toLowerCase())));
-			setPage(0);
-		} else {
-			setData(products);
-		}
-	}, [products, searchText]);
+		setData(products);
+	}, [products]);
 
 	function handleRequestSort(event, property) {
 		const id = property;
@@ -140,7 +133,7 @@ function ProductsTable(props) {
 		<div className="w-full flex flex-col">
 			<FuseScrollbars className="flex-grow overflow-x-auto">
 				<Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-					<ProductsTableHead
+					<BlogsTableHead
 						selectedProductIds={selected}
 						order={order}
 						onSelectAllClick={handleSelectAllClick}
@@ -258,4 +251,4 @@ function ProductsTable(props) {
 	);
 }
 
-export default withRouter(ProductsTable);
+export default withRouter(BlogsTable);

@@ -849,6 +849,30 @@ const navigationConfig = [
 				icon: 'account_box',
 				url: '/apps/contacts/all'
 			},
+			{
+				id: 'blog',
+				title: 'Blogs',
+				// translate: 'ECOMMERCE',
+				type: 'collapse',
+				icon: 'assessment',
+				url: '/apps/blogs',
+				children: [
+					{
+						id: 'blogs',
+						title: 'Blogs',
+						type: 'item',
+						url: '/apps/blogs/blogs',
+						exact: true
+					},
+					{
+						id: 'blog',
+						title: 'New Blog',
+						type: 'item',
+						url: '/apps/blogs/blogs/new',
+						exact: true
+					}
+				]
+			},
 			// {
 			// 	id: 'academy',
 			// 	title: 'Academy',
