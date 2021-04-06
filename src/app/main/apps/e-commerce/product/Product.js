@@ -116,7 +116,7 @@ function Product(props) {
 				setStatus('new');
 				setNoProduct(false);
 			} else {
-				const resp = await axios.post(Backend.URL + '/get_product_id', {id: routeParams.productId}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
+				const resp = await axios.post(Backend.URL + '/get_product_id', {id: routeParams.productId, platinum: 'on'}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 				let data = resp.data[0][0];
 				if (data) {
 					setForm({...data, featured_images: data.featured_images.split('|'), free_blend: data.free_blend.split('|'), pro_blend: data.pro_blend.split('|'), local_blend: data.local_blend.split('|')});
