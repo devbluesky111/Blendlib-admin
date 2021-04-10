@@ -32,7 +32,7 @@ function CoversTable(props) {
 
 	const init = async () => {
 		setLoading(true);
-		const res = await axios.post(Backend.URL + '/get_covers', { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
+		const res = await axios.post(Backend.URL + '/get_covers',{data: 0} ,{ withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setCovers(res.data);
 		setLoading(false);
 	}
@@ -68,7 +68,7 @@ function CoversTable(props) {
 	}
 
 	async function handleDeselect() {
-		const resp = await axios.post(Backend.URL + '/delete_product', {ids: selected}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
+		const resp = await axios.post(Backend.URL + '/delete_cover', {ids: selected}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		if (resp.data.ids) {
 			setLoading(true);
 			init();
