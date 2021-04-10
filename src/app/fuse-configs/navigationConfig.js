@@ -849,6 +849,30 @@ const navigationConfig = [
 				icon: 'account_box',
 				url: '/apps/contacts/all'
 			},
+			{
+				id: 'covers',
+				title: 'Coverimages',
+				translate: 'Homepage',
+				type: 'collapse',
+				icon: 'image',
+				url: '/apps/covers',
+				children: [
+					{
+						id: 'cover-images',
+						title: 'Slides',
+						type: 'item',
+						url: '/apps/covers/images',
+						exact: true
+					},
+					{
+						id: 'cover-new-image',
+						title: 'New Slide',
+						type: 'item',
+						url: '/apps/covers/images/new',
+						exact: true
+					}
+				]	
+			},
 			// {
 			// 	id: 'academy',
 			// 	title: 'Academy',
