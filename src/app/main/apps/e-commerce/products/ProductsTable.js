@@ -42,7 +42,7 @@ function ProductsTable(props) {
 		const res2 = await axios.post(Backend.URL + '/get_menu', {data:0}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 		setMenus(res2.data);
 		const res = await axios.post(Backend.URL + '/get_products', {platinum: 'on'}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
-		setProducts(res.data[0]);
+		setProducts(res.data);
 		setLoading(false);
 	}
 
