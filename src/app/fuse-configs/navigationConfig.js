@@ -873,6 +873,30 @@ const navigationConfig = [
 					}
 				]	
 			},
+			{
+				id: 'blogs',
+				title: 'Blogposts',
+				translate: 'Blog',
+				type: 'collapse',
+				icon: 'image',
+				url: '/apps/blogs',
+				children: [
+					{
+						id: 'blog-posts',
+						title: 'Posts',
+						type: 'item',
+						url: '/apps/blogs/posts',
+						exact: true
+					},
+					{
+						id: 'blog-new-post',
+						title: 'New Post',
+						type: 'item',
+						url: '/apps/blogs/posts/new',
+						exact: true
+					}
+				]	
+			},
 			// {
 			// 	id: 'academy',
 			// 	title: 'Academy',
