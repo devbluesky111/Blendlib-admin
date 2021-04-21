@@ -897,6 +897,14 @@ const navigationConfig = [
 					}
 				]	
 			},
+			{
+				id: 'campaign',
+				title: 'Campaign',
+				translate: 'Send Campaigns',
+				type: 'item',
+				icon: 'mail_box',
+				url: '/apps/campaigns'
+			},
 			// {
 			// 	id: 'academy',
 			// 	title: 'Academy',
@@ -904,7 +912,7 @@ const navigationConfig = [
 			// 	type: 'item',
 			// 	icon: 'school',
 			// 	url: '/apps/academy'
-			// },
+			// // },
 			// {
 			// 	id: 'mail',
 			// 	title: 'Mail',
