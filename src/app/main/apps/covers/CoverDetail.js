@@ -82,6 +82,7 @@ function CoverDetail(props) {
 				});
 				setStatus('new');
 				setNoProduct(false);
+				setTabValue(0);
 			} else {
 				const resp = await axios.post(Backend.URL + '/get_cover_id', {id: routeParams.coverId}, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} });
 				let data = resp.data[0];
