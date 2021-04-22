@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import Backend from '@fuse/utils/BackendUrl';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 function CampaignsApp(props) {
 
@@ -25,13 +26,15 @@ function CampaignsApp(props) {
 
 	function sendCampaign() {
 		axios.post(Backend.URL + '/add_campaign', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
-			if(resp.data.id) {
+			if(resp.status === "success") {
 				setForm({...form, subject:"",textPart:"",htmlPart:""});
+				swal("Sent!", "Your email marketing campaign has been sent to all the customers and prospects successfully!", "success");
 			} else {
-				alert('failed');
+				swal("Oops!", "Something went wrong!", "error");
 			}
 		}).catch(function(err){
 			console.log(err);
+			swal("Oops!", "Something went wrong!", "error");
 		});
 	}
 
@@ -56,7 +59,7 @@ function CampaignsApp(props) {
 								<div className="flex flex-col min-w-0 mx-8 sm:mc-16">
 									<FuseAnimate animation="transition.slideLeftIn" delay={300}>
 										<Typography className="text-16 sm:text-20 truncate">
-											{form.subject ? form.subject : 'New Blog Posts'}
+											{form.subject ? form.subject : 'Email Marketing Campaign'}
 										</Typography>
 									</FuseAnimate>
 									<FuseAnimate animation="transition.slideLeftIn" delay={300}>
