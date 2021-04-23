@@ -26,7 +26,7 @@ function CampaignsApp(props) {
 
 	function sendCampaign() {
 		axios.post(Backend.URL + '/add_campaign', form, { withCredentials: true, headers: {"Access-Control-Allow-Origin": "*"} }).then(function(resp){
-			if(resp.status === "success") {
+			if(resp.data.status === "success") {
 				setForm({...form, subject:"",textPart:"",htmlPart:""});
 				swal("Sent!", "Your email marketing campaign has been sent to all the customers and prospects successfully!", "success");
 			} else {
